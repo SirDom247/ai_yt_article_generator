@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Article Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to { 
+                transform: rotate(360deg);
+            }
+        }
+        
+         @-webkit-keyframes rotate {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to { 
+                -webkit-transform: rotate(360deg);
+            }
+        }
+        
+        .load {
+            width: 100px;
+            height: 100px;
+            margin: 110px auto 0;
+            border:solid 10px #8822aa;
+            border-radius: 50%;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+             -webkit-transition: all 0.5s ease-in;
+            -webkit-animation-name:             rotate; 
+            -webkit-animation-duration:         1.0s; 
+            -webkit-animation-iteration-count:  infinite;
+            -webkit-animation-timing-function: linear;
+                
+                 transition: all 0.5s ease-in;
+            animation-name:             rotate; 
+            animation-duration:         1.0s; 
+            animation-iteration-count:  infinite;
+            animation-timing-function: linear; 
+        }
+    </style>
+</head>
+<body class="bg-gray-600">
+      <!--Navbar-->
+    <nav class="bg-blue-700 p-4 flex justify-between">
+        <div>
+            <img class="max-h-10 w-15" src="main-logo.png" alt="main logo">
+        <div class="bg-grey-400 flex justify-between">
+            <a href="{% url 'home' %}" class="text-2lg text-white font-bold hover:underline"><h2>Home</h2></a>
+            <a href="{% url 'login' %}" class="text-2lg text-white font-bold hover:underline"><h2>Login</h2></a>
+        </div>
+    </nav>
+    <br>
+    <br>
+    
+    <!--main-->
+    <div class="flex-glow container px-10 mx-auto sm:px-0 text-center">
+        <div class="max-w-3xl mx-auto bg-gray-300 p-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
+            <div class="text-center">
+                <h2 class="text-3xl font-semibold text-blue-700 mb-5">Welcome To AI YouTube Article Generator</h1>
+                <p class="text-black-2000 text-lg font-bold">Generate high quality articles from YouTube videos using artificial intelligence. Simply enter the link to the YouTube video below and allow AI generate the article for you!</p>
+            </div>
+
+            <br>
+
+            <div class="text-center" >
+                <h2 class="mb-4 font-semibold text-2xl text-blue-700"> Enter YouTube Video Link</h2>
+                <div class="text-center">
+                    <input id="youtubeLink" type="url" placeholder="Paste YouTube Link....." class="flex-glow p-3 border border-blue-400 rounded-lg text-center">
+
+                    <button id="generareButton" class="bg-blue-700 rounded-lg font-semibold text-white px-4 py-3 hover:bg-gray-600">Generate</button>
+                </div>
+                
+            </div>
+
+            <br>
+
+            <div>
+                <div id="progress-container" class="progress-circle items-center justify-center" style="display: none;">
+                    <div class="circle">
+                        <div class="inner-circle"></div>
+                    </div>
+                    <div class="progress-value" id="progress-value">0%</div>
+                </div>
+                <div id="response" style="margin-top: 20px; font-size: 18px;"></div>
+        
+                <script src="script.js"></script>
+            </div>
+
+            <!-- section for loading circle -->
+            <div style="display: none;" id="loading-circle" class="load"></div>
+
+            <br>
+            <br>
+
+
+            <section>
+                <div class="flex-glow container mt mx-auto sm:px-0 text-center">
+                    <div class="max-w-3xl mx-auto bg-white py-20 rounded-lg shadow-md  flex flex-col">
+                    <div class="text-center">
+                        <h3 class="font-semibold text-lg text-black-700">Generated Blog Article</h3>
+                    </div>   
+                </div>
+            </section>
+            
+        </div>
+    </div>
+
+    <div class="index_footer">
+    <script src="scripts.js"></script>
+ 
+        <div>
+            <footer class="text-center font-semibold text-white bg-blue-600 mt-7 py-6">    
+                <span> <a href="https://www.wfcetomokucareerservice.com/privacy-policy/">Privacy Policy</a> | <a href="https://www.fcetomokucareerservice.net/terms-of-service/">Terms of Service</a> | <a href="https://www.fcetomokucareerservice/blog">Blog</a> 
+                </span>
+                <br> <br>
+
+                <h4> © 2024 | Powered by Rigel Tech Konsultz</h4>
+            </footer>
+        </div>
+
+<script>
+        document.getElementById('generateButton').addEventListener('click', async () => {
+            
+
+            const youtubeLink = document.getElementById('youtubeLink').value;
+            const blogContent = document.getElementById('blogContent');
+            
+            if(youtubeLink) {
+                document.getElementById('loading-circle').style.display = 'block';
+                
+                blogContent.innerHTML = ''; // Clear previous content
+
+                const endpointUrl = '/generate-blog';
+                
+                try {
+                    const response = await fetch(endpointUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ link: youtubeLink })
+                    });
+
+                    const data = await response.json();
+
+                    blogContent.innerHTML = data.content;
+
+                } catch (error) {
+                    console.error("Error occurred:", error);
+                    alert("Something went wrong. Please try again later.");
+                    
+                }
+                document.getElementById('loading-circle').style.display = 'none';
+            } else {
+                alert("Please enter a YouTube link.");
+            }
+        });
+</script>
+</body>
+</html>
